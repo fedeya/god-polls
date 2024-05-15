@@ -14,16 +14,26 @@ const VoteSchema = new Schema<Vote>({
 
 export const VoteModel = model<Vote>("Vote", VoteSchema)
 
-interface Pool {
+interface Poll {
   question: string;
   messageId: string;
-  options: string[];
+  options: Option[];
 }
 
-const PoolSchema = new Schema<Pool>({
+interface Option {
+  value: string;
+  text: string;
+}
+
+const OptionSchema = new Schema<Option>({
+  value: String,
+  text: String
+})
+
+const PollSchema = new Schema<Poll>({
   question: String,
   messageId: String,
-  options: [String],
+  options: [OptionSchema],
 });
 
-export const PoolModel = model<Pool>("Pool", PoolSchema);
+export const PollModel = model<Poll>("poll", PollSchema);

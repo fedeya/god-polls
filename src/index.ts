@@ -2,7 +2,7 @@ import { App, KnownBlock } from '@slack/bolt'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import mongoose from 'mongoose'
-import { PoolModel, VoteModel } from './schemas';
+import { PollModel, VoteModel } from './schemas';
 
 const app = new App({
   token: process.env.TOKEN,
@@ -252,14 +252,28 @@ app.view("view_1", async ({ ack, view, client }) => {
     ]
   })
 
-  await PoolModel.create({
+  console.log("creating poll", view.state.values.question.input.value);
+
+  await PollModel.create({
     messageId: message.ts,
     question: view.state.values.question.input.value,
     options: [
-      view.state.values.option1.input.value,
-      view.state.values.option2.input.value,
-      view.state.values.option3.input.value,
-      view.state.values.option4.input.value,
+      {
+        value: "option1",
+        text: view.state.values.option1.input.value
+      },
+      {
+        value: "option2",
+        text: view.state.values.option2.input.value
+      },
+      {
+        value: "option3",
+        text: view.state.values.option3.input.value
+      },
+      {
+        value: "option4",
+        text: view.state.values.option4.input.value
+      }
     ].filter(Boolean)
   })
 });
