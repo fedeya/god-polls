@@ -73,6 +73,7 @@ app.view("view_1", async ({ ack, view, client }) => {
   await PollModel.create({
     messageId: message.ts,
     question: view.state.values.question.input.value,
+    teamId: view.team_id,
     options: [
       {
         value: "option1",

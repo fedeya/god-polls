@@ -18,6 +18,7 @@ interface Poll {
   question: string;
   messageId: string;
   options: Option[];
+  teamId?: string;
 }
 
 interface Option {
@@ -33,6 +34,7 @@ const OptionSchema = new Schema<Option>({
 const PollSchema = new Schema<Poll>({
   question: String,
   messageId: String,
+  teamId: String,
   options: [OptionSchema],
 });
 
