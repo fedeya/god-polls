@@ -3,7 +3,9 @@ import { app } from "../app";
 app.command("/poll", async ({ command, ack, client, body }) => {
   await ack();
 
-  client.views.open({
+  console.log("start poll", command.text, command.channel_id, command.user_id, body.trigger_id)
+
+  await client.views.open({
     trigger_id: body.trigger_id,
     view: {
       type: "modal",
@@ -114,7 +116,7 @@ app.command("/poll", async ({ command, ack, client, body }) => {
             "text": "Channel to post poll in:"
           },
           "accessory": {
-            action_id: "input",
+            action_id: "channels_select",
             type: "channels_select",
             initial_channel: command.channel_id,
             placeholder: {
@@ -132,3 +134,9 @@ app.command("/poll", async ({ command, ack, client, body }) => {
   })
 })
 
+
+app.action("channel_select", async ({ ack, body, client }) => {
+  await ack();
+
+  console.log(body);
+});

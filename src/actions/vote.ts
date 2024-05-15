@@ -17,11 +17,18 @@ app.action("vote", async ({ ack, body, client, action }) => {
 
 
   if (userVote && userVote.optionValue !== action.value) {
-    await VoteModel.updateMany({
+    await VoteModel.updateOne({
       userId: body.user.id,
       messageId: body.message?.ts as string
     }, {
       optionValue: action.value as string
+    })
+  }
+
+  if (userVote && userVote.optionValue === action.value) {
+    await VoteModel.deleteOne({
+      userId: body.user.id,
+      messageId: body.message?.ts as string
     })
   }
 
@@ -45,7 +52,7 @@ app.action("vote", async ({ ack, body, client, action }) => {
     // update votes percentage bar
     const optionVotes = poolVotes.filter(vote => vote.optionValue === value);
 
-    const percentage = Math.round((optionVotes.length / poolVotes.length) * 100);
+    const percentage = Math.round((optionVotes.length / poolVotes.length) * 100) || 0;
 
     const spaces = Math.round((percentage / 100) * maxSpaces);
 
@@ -68,7 +75,7 @@ app.action("vote", async ({ ack, body, client, action }) => {
     return block;
   });
 
-  client.chat.update({
+  await client.chat.update({
     channel: body.channel?.id as string,
     ts: body.message?.ts as string,
     text: "New Poll!",
