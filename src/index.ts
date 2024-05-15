@@ -1,11 +1,57 @@
 import { App, KnownBlock } from '@slack/bolt'
+import { readFile } from 'fs/promises'
+import path from 'path'
+import mongoose from 'mongoose'
+import { VoteModel } from './schemas';
 
 const app = new App({
   token: process.env.TOKEN,
   signingSecret: process.env.SIGNING_SECRET,
   appToken: process.env.APP_TOKEN,
+  port: +(process.env.PORT || 3000),
+  customRoutes: [
+    {
+
+      path: "/public/*",
+      method: "GET",
+      handler: async (req, res) => {
+        const filePath = path.resolve(__dirname, `.${req.url}`);
+
+        console.log(filePath);
+
+
+        try {
+          const file = await readFile(filePath);
+
+          res.write(file);
+
+          res.end();
+        } catch (error) {
+          console.error(error);
+
+          res.statusCode = 404;
+
+          res.end();
+        }
+      }
+    },
+    {
+      path: "/success",
+      method: "GET",
+      handler: async (_req, res) => {
+        res.setHeader("Content-Type", "text/html");
+
+        const html = await readFile(path.resolve(__dirname, "./index.html"), "utf-8");
+
+        res.write(html);
+
+        res.end();
+      }
+    }
+  ],
   socketMode: true,
 });
+
 
 
 app.command("/poll", async ({ command, ack, client, respond, body }) => {
@@ -208,44 +254,39 @@ app.view("view_1", async ({ ack, view, client }) => {
 });
 
 
-type Vote = {
-  userId: string;
-  option: string;
-  poolId: string;
-}
-
-const votes: Vote[] = []
-
 app.action("vote", async ({ ack, body, client, action }) => {
   await ack();
 
   if (action.type !== "button" || body.type !== "block_actions") return;
 
-
-  let poolVotes = votes.filter(vote => vote.poolId === body.message?.ts);
-
-  const userVote = poolVotes.find(vote => vote.userId === body.user.id);
-
-  if (userVote && userVote.option !== action.value) {
-    votes.splice(votes.indexOf(userVote), 1);
-
-    votes.push({
+  let [poolVotes, userVote] = await Promise.all([
+    VoteModel.find().where("messageId").equals(body.message?.ts as string).exec(),
+    VoteModel.findOne({
       userId: body.user.id,
-      option: action.value,
-      poolId: body.message?.ts as string,
+      messageId: body.message?.ts as string
+    }).exec()
+  ])
+
+
+
+  if (userVote && userVote.optionValue !== action.value) {
+    await VoteModel.updateMany({
+      userId: body.user.id,
+      messageId: body.message?.ts as string
+    }, {
+      optionValue: action.value as string
     })
   }
 
   if (!userVote) {
-    votes.push({
+    await VoteModel.create({
       userId: body.user.id,
-      option: action.value,
-      poolId: body.message?.ts as string,
+      optionValue: action.value as string,
+      messageId: body.message?.ts as string
     })
   }
 
-  poolVotes = votes.filter(vote => vote.poolId === body.message?.ts);
-
+  poolVotes = await VoteModel.find().where("messageId").equals(body.message?.ts as string).exec()
 
   const maxSpaces = 24;
 
@@ -255,7 +296,7 @@ app.action("vote", async ({ ack, body, client, action }) => {
     const value = block.accessory?.value;
 
     // update votes percentage bar
-    const optionVotes = poolVotes.filter(vote => vote.option === value);
+    const optionVotes = poolVotes.filter(vote => vote.optionValue === value);
 
     const percentage = Math.round((optionVotes.length / poolVotes.length) * 100);
 
@@ -289,6 +330,7 @@ app.action("vote", async ({ ack, body, client, action }) => {
 
 
 async function main() {
+  await mongoose.connect(process.env.DATABASE_URL as string)
 
   await app.start(process.env.PORT || 3000)
 
