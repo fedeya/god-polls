@@ -237,6 +237,7 @@ app.view("view_1", async ({ ack, view, client }) => {
 
   const message = await client.chat.postMessage({
     channel: view.state.values.channel.input.selected_channel as string,
+    text: "New Poll!",
     blocks: [
       {
         type: "section",
@@ -349,6 +350,7 @@ app.action("vote", async ({ ack, body, client, action }) => {
   client.chat.update({
     channel: body.channel?.id as string,
     ts: body.message?.ts as string,
+    text: "New Poll!",
     blocks: newBlocks,
   })
 });
