@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "dotenv -- tsx --watch ./src/index.ts"
+    "dev": "dotenv -- tsx --watch ./src/index.ts",
+    "start": "tsx ./src/index.ts"
   },
   "keywords": [],
   "author": "",
