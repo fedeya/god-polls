@@ -31,7 +31,6 @@ const createOptionMessage = (option: number, label?: string | null) => {
       ]
       ,
     }] satisfies KnownBlock[]
-
 }
 
 app.view("view_1", async ({ ack, view, client }) => {
@@ -51,7 +50,7 @@ app.view("view_1", async ({ ack, view, client }) => {
   }
 
   const message = await client.chat.postMessage({
-    channel: view.state.values.channel.input.selected_channel as string,
+    channel: view.state.values.channel.channels_select.selected_channel as string,
     text: "New Poll!",
     blocks: [
       {
