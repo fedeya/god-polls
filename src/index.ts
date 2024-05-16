@@ -4,6 +4,7 @@ import { app } from './app';
 import './commands';
 import './views';
 import './actions'
+import './events'
 
 async function main() {
   await mongoose.connect(process.env.DATABASE_URL as string)
