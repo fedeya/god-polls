@@ -1,4 +1,4 @@
-import { KnownBlock } from '@slack/bolt';
+import type { KnownBlock } from '@slack/bolt';
 
 const createOptionMessage = (option: number, label?: string | null) => {
   return [
@@ -40,8 +40,7 @@ type CreatePollMessageArgs = {
 export const createPollMessage = (args: CreatePollMessageArgs) => {
   const optionBlocks = args.options
     .filter((option) => !!option)
-    .map((option, index) => createOptionMessage(index + 1, option))
-    .flat();
+    .flatMap((option, index) => createOptionMessage(index + 1, option));
 
   return {
     channel: args.channelId,
@@ -61,3 +60,5 @@ export const createPollMessage = (args: CreatePollMessageArgs) => {
     ],
   };
 };
+
+export type PollMessage = ReturnType<typeof createPollMessage>;

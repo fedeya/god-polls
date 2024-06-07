@@ -1,3 +1,4 @@
+import type { KnownBlock } from '@slack/bolt';
 import { app } from '../app';
 import { VoteModel } from '../schemas';
 
@@ -52,8 +53,10 @@ app.action('vote', async ({ ack, body, client, action }) => {
   const maxSpaces = 24;
 
   const newBlocks = body.message?.blocks.map(
-    (block: any, _i: number, blocks: any[]) => {
-      if (!block.accessory?.value) return block;
+    (block: KnownBlock, _i: number, blocks: KnownBlock[]) => {
+      if (block.type !== 'section') return block;
+
+      if (block.accessory && !('value' in block.accessory)) return block;
 
       const value = block.accessory?.value;
 
@@ -80,6 +83,10 @@ app.action('vote', async ({ ack, body, client, action }) => {
       const contextBlock = blocks.find(
         (block) => block.block_id === `${value}-votes`
       );
+
+      if (!contextBlock || contextBlock.type !== 'context') return block;
+
+      if (contextBlock.elements[0].type !== 'mrkdwn') return block;
 
       contextBlock.elements[0].text = `${optionVotes.length} votes`;
 

@@ -1,6 +1,6 @@
 import { app } from '../app';
-import { PollModel } from '../schemas';
 import { createPollMessage } from '../features/create-poll-message';
+import { PollModel } from '../schemas';
 import { isSlackError } from '../utils/is-slack-error';
 
 app.view('create-poll-view', async ({ ack, view, client }) => {

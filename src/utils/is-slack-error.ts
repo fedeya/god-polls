@@ -4,6 +4,14 @@ interface SlackError {
   };
 }
 
-export const isSlackError = (error: any): error is SlackError => {
-  return 'data' in error && error?.data && 'error' in error.data;
+export const isSlackError = (error: unknown): error is SlackError => {
+  const cond =
+    error &&
+    typeof error === 'object' &&
+    'data' in error &&
+    error?.data &&
+    typeof error.data === 'object' &&
+    'error' in error.data;
+
+  return !!cond;
 };

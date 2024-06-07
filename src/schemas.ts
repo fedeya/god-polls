@@ -1,5 +1,5 @@
-import { Installation as SlackInstallation } from '@slack/bolt';
-import { Schema, model, InferSchemaType } from 'mongoose';
+import type { Installation as SlackInstallation } from '@slack/bolt';
+import { type InferSchemaType, Schema, model } from 'mongoose';
 
 const VoteSchema = new Schema({
   userId: {

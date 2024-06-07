@@ -1,4 +1,4 @@
-import { View } from '@slack/bolt';
+import type { View } from '@slack/bolt';
 
 type CreatePollViewArgs = {
   initialChannel?: string;

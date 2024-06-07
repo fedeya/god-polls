@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
-import { InstallationModel } from './schemas';
 import { env } from './lib/env';
+import { InstallationModel } from './schemas';
 
 export const app = new App({
   token: env.TOKEN,
