@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
-  NODE_ENV: z.string().default("development"),
+  NODE_ENV: z.string().default('development'),
 
   CLIENT_ID: z.string().optional(),
   CLIENT_SECRET: z.string().optional(),
@@ -13,6 +13,6 @@ const envSchema = z.object({
   APP_TOKEN: z.string(),
 
   DATABASE_URL: z.string(),
-})
+});
 
 export const env = envSchema.parse(process.env);

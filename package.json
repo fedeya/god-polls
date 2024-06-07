@@ -18,6 +18,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.0",
     "@types/node": "^20.12.12",
     "tsx": "^4.10.2",
     "typescript": "^5.4.5"

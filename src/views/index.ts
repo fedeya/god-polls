@@ -1,1 +1,0 @@
-import './create-poll-modal'

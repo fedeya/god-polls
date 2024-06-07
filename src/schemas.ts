@@ -1,31 +1,31 @@
-import { Installation as SlackInstallation } from '@slack/bolt'
+import { Installation as SlackInstallation } from '@slack/bolt';
 import { Schema, model, InferSchemaType } from 'mongoose';
 
 const VoteSchema = new Schema({
   userId: {
     type: String,
-    required: true
+    required: true,
   },
   optionValue: {
     type: String,
-    required: true
+    required: true,
   },
   messageId: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
-export type Vote = InferSchemaType<typeof VoteSchema>
+export type Vote = InferSchemaType<typeof VoteSchema>;
 
-export const VoteModel = model<Vote>("Vote", VoteSchema)
+export const VoteModel = model<Vote>('Vote', VoteSchema);
 
 const OptionSchema = new Schema({
   value: String,
-  text: String
-})
+  text: String,
+});
 
-export type Option = InferSchemaType<typeof OptionSchema>
+export type Option = InferSchemaType<typeof OptionSchema>;
 
 const PollSchema = new Schema({
   question: String,
@@ -34,17 +34,21 @@ const PollSchema = new Schema({
   options: [OptionSchema],
 });
 
-export type Poll = InferSchemaType<typeof PollSchema>
+export type Poll = InferSchemaType<typeof PollSchema>;
 
-export const PollModel = model<Poll>("poll", PollSchema);
+export const PollModel = model<Poll>('poll', PollSchema);
 
 const InstallationSchema = new Schema({
   teamId: String,
-  installation: Object
+  installation: Object,
 });
 
-export interface Installation extends InferSchemaType<typeof InstallationSchema> {
-  installation: SlackInstallation<"v1" | "v2", boolean>;
+export interface Installation
+  extends InferSchemaType<typeof InstallationSchema> {
+  installation: SlackInstallation<'v1' | 'v2', boolean>;
 }
 
-export const InstallationModel = model<Installation>("Installation", InstallationSchema);
+export const InstallationModel = model<Installation>(
+  'Installation',
+  InstallationSchema
+);

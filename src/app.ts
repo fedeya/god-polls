@@ -1,4 +1,4 @@
-import { App } from '@slack/bolt'
+import { App } from '@slack/bolt';
 import { InstallationModel } from './schemas';
 import { env } from './lib/env';
 
@@ -10,22 +10,31 @@ export const app = new App({
   port: env.PORT,
   clientId: env.CLIENT_ID,
   clientSecret: env.CLIENT_SECRET,
-  scopes: ["commands", "im:read", "im:write", "chat:write", "channels:join", "app_mentions:read"],
+  scopes: [
+    'commands',
+    'im:read',
+    'im:write',
+    'chat:write',
+    'channels:join',
+    'app_mentions:read',
+  ],
   installerOptions: {
-    installPath: "/slack/install",
-    redirectUriPath: "/slack/oauth_redirect",
+    installPath: '/slack/install',
+    redirectUriPath: '/slack/oauth_redirect',
     port: env.PORT,
   },
-  stateSecret: !env.TOKEN ? "my-secret" : undefined,
+  stateSecret: !env.TOKEN ? 'my-secret' : undefined,
   installationStore: {
     async storeInstallation(installation) {
-
-      if (installation.isEnterpriseInstall && installation.enterprise !== undefined) {
+      if (
+        installation.isEnterpriseInstall &&
+        installation.enterprise !== undefined
+      ) {
         // handle storing org-wide app installation
         await InstallationModel.create({
           teamId: installation.enterprise.id,
           installation,
-        })
+        });
 
         return;
       }
@@ -34,37 +43,47 @@ export const app = new App({
         await InstallationModel.create({
           teamId: installation.team.id,
           installation,
-        })
+        });
 
         return;
       }
 
-
       throw new Error('Failed saving installation data to installationStore');
-
     },
 
     async fetchInstallation(installQuery) {
-      if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+      if (
+        installQuery.isEnterpriseInstall &&
+        installQuery.enterpriseId !== undefined
+      ) {
         // handle org wide app installation lookup
-        const data = await InstallationModel.findOne({ teamId: installQuery.enterpriseId })
+        const data = await InstallationModel.findOne({
+          teamId: installQuery.enterpriseId,
+        });
 
-        if (data) return data.installation
+        if (data) return data.installation;
       }
       if (installQuery.teamId !== undefined) {
         // single team app installation lookup
-        const data = await InstallationModel.findOne({ teamId: installQuery.teamId })
+        const data = await InstallationModel.findOne({
+          teamId: installQuery.teamId,
+        });
 
-        if (data) return data.installation
+        if (data) return data.installation;
       }
 
       throw new Error('Failed fetching installation');
     },
 
     async deleteInstallation(installQuery) {
-      if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+      if (
+        installQuery.isEnterpriseInstall &&
+        installQuery.enterpriseId !== undefined
+      ) {
         // org wide app installation deletion
-        await InstallationModel.deleteOne({ teamId: installQuery.enterpriseId });
+        await InstallationModel.deleteOne({
+          teamId: installQuery.enterpriseId,
+        });
 
         return;
       }
