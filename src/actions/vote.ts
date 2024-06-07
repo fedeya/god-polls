@@ -14,8 +14,6 @@ app.action("vote", async ({ ack, body, client, action }) => {
     }).exec()
   ])
 
-
-
   if (userVote && userVote.optionValue !== action.value) {
     await VoteModel.updateOne({
       userId: body.user.id,

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { app } from './app';
+import { env } from './lib/env';
 
 import './commands';
 import './views';
@@ -7,9 +8,11 @@ import './actions'
 import './events'
 
 async function main() {
-  await mongoose.connect(process.env.DATABASE_URL as string)
+  await mongoose.connect(env.DATABASE_URL);
 
-  await app.start(process.env.PORT || 3000)
+  console.log("🚀 Database connected!");
+
+  await app.start(env.PORT)
 
   console.log("⚡️ Bolt app is running!");
 }

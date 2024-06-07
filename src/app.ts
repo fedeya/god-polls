@@ -1,21 +1,22 @@
 import { App } from '@slack/bolt'
 import { InstallationModel } from './schemas';
+import { env } from './lib/env';
 
 export const app = new App({
-  // token: process.env.TOKEN,
-  signingSecret: process.env.SIGNING_SECRET,
-  appToken: process.env.APP_TOKEN,
-  botId: "A073C21Q3E1",
-  port: +(process.env.PORT || 3000),
-  clientId: "6941646638193.7114069819477",
-  clientSecret: "a3bb07af3ba5b111747f1c4cea869723",
+  token: env.TOKEN,
+  signingSecret: env.SIGNING_SECRET,
+  appToken: env.APP_TOKEN,
+  botId: env.BOT_ID,
+  port: env.PORT,
+  clientId: env.CLIENT_ID,
+  clientSecret: env.CLIENT_SECRET,
   scopes: ["commands", "im:read", "im:write", "chat:write", "channels:join", "app_mentions:read"],
   installerOptions: {
     installPath: "/slack/install",
     redirectUriPath: "/slack/oauth_redirect",
-    port: +(process.env.PORT || 3000),
+    port: env.PORT,
   },
-  stateSecret: "my-secret",
+  stateSecret: !env.TOKEN ? "my-secret" : undefined,
   installationStore: {
     async storeInstallation(installation) {
 
