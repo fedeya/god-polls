@@ -34,6 +34,7 @@ const createOptionMessage = (option: number, label?: string | null) => {
 type CreatePollMessageArgs = {
   channelId: string;
   question: string;
+  userId?: string;
   options: (string | null | undefined)[];
 };
 
@@ -41,6 +42,23 @@ export const createPollMessage = (args: CreatePollMessageArgs) => {
   const optionBlocks = args.options
     .filter((option) => !!option)
     .flatMap((option, index) => createOptionMessage(index + 1, option));
+
+  const byBlock = args.userId
+    ? ([
+        {
+          type: 'divider',
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `Poll created by <@${args.userId}>`,
+            },
+          ],
+        },
+      ] satisfies KnownBlock[])
+    : [];
 
   return {
     channel: args.channelId,
@@ -57,6 +75,7 @@ export const createPollMessage = (args: CreatePollMessageArgs) => {
         type: 'divider',
       },
       ...optionBlocks,
+      ...byBlock,
     ],
   };
 };

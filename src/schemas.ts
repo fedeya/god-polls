@@ -1,11 +1,17 @@
 import type { Installation as SlackInstallation } from '@slack/bolt';
 import { type InferSchemaType, Schema, model } from 'mongoose';
 
+const userSchema = new Schema({
+  image: String,
+  name: String,
+});
+
 const VoteSchema = new Schema({
   userId: {
     type: String,
     required: true,
   },
+  userProfile: userSchema,
   optionValue: {
     type: String,
     required: true,
@@ -31,7 +37,12 @@ const PollSchema = new Schema({
   question: String,
   messageId: String,
   teamId: String,
+  createdBy: String,
   options: [OptionSchema],
+  pollMode: {
+    type: String,
+    enum: ['anonymous', 'non-anonymous'],
+  },
 });
 
 export type Poll = InferSchemaType<typeof PollSchema>;

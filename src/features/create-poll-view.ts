@@ -69,7 +69,7 @@ export const createPollView = (args: CreatePollViewArgs): View => ({
       block_id: 'option3',
       label: {
         type: 'plain_text',
-        text: 'Option 3 (optional)',
+        text: 'Option 3',
       },
       element: {
         type: 'plain_text_input',
@@ -87,7 +87,7 @@ export const createPollView = (args: CreatePollViewArgs): View => ({
       block_id: 'option4',
       label: {
         type: 'plain_text',
-        text: 'Option 4 (optional)',
+        text: 'Option 4',
       },
       element: {
         type: 'plain_text_input',
@@ -98,6 +98,42 @@ export const createPollView = (args: CreatePollViewArgs): View => ({
         },
       },
       optional: true,
+    },
+
+    {
+      type: 'input',
+      block_id: 'poll_mode',
+      label: {
+        type: 'plain_text',
+        text: 'Poll mode',
+      },
+      element: {
+        action_id: 'input',
+        type: 'static_select',
+        options: [
+          {
+            text: {
+              type: 'plain_text',
+              text: 'Anonymous',
+            },
+            value: 'anonymous',
+          },
+          {
+            text: {
+              type: 'plain_text',
+              text: 'Non-anonymous',
+            },
+            value: 'non-anonymous',
+          },
+        ],
+        initial_option: {
+          value: 'anonymous',
+          text: {
+            type: 'plain_text',
+            text: 'Anonymous',
+          },
+        },
+      },
     },
 
     {
