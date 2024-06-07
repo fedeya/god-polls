@@ -3,10 +3,13 @@ import { createPollMessage } from '../features/create-poll-message';
 import { PollModel } from '../schemas';
 import { isSlackError } from '../utils/is-slack-error';
 
-app.view('create-poll-view', async ({ ack, view, client }) => {
+app.view('create-poll-view', async ({ ack, view, client, body }) => {
   await ack();
 
+  const pollMode = view.state.values.poll_mode.input.selected_option?.value;
+
   const message = createPollMessage({
+    userId: pollMode === 'non-anonymous' ? body.user.id : undefined,
     channelId: view.state.values.channel.channels_select
       .selected_channel as string,
     options: [
@@ -38,12 +41,12 @@ app.view('create-poll-view', async ({ ack, view, client }) => {
     return;
   }
 
-  console.log('creating poll', view.state.values.question.input.value);
-
   await PollModel.create({
     messageId: messageResponse.ts,
     question: view.state.values.question.input.value,
     teamId: view.team_id,
+    createdBy: pollMode === 'non-anonymous' ? body.user.id : 'anonymous',
+    pollMode,
     options: [
       {
         value: 'option1',

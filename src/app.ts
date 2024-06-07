@@ -17,6 +17,7 @@ export const app = new App({
     'chat:write',
     'channels:join',
     'app_mentions:read',
+    'users.profile:read',
   ],
   installerOptions: {
     installPath: '/slack/install',
